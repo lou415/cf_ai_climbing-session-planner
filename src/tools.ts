@@ -117,7 +117,7 @@ const setClimberProfile = tool({
     injuries: z.string().optional().describe("Any current injuries or limitation to work around."),
     goal: z.string().optional().describe("What the climber is working towards.")
   }),
-  execute: async({boulderingGrade, sportGrade, weaknesses, injuries, goals}) =>{
+  execute: async({boulderingGrade, sportGrade, weaknesses, injuries, goal}) =>{
     const { agent } = getCurrentAgent<Chat>();
 
     try{
@@ -126,11 +126,11 @@ const setClimberProfile = tool({
         sportGrade,
         weaknesses,
         injuries,
-        goals,
+        goal,
         updatedAt: new Date().toISOString()
       };
       
-      agent!.setState({ ...agent!.state, climberProfile: profile});
+      agent!.setState({ ...(agent!.state || {}), climberProfile: profile });
       return `Profile saved! Bouldering: ${boulderingGrade || "not set"}, Sport: ${sportGrade || "not set"}, Weaknesses: ${weaknesses?.join(", ") || "none specified"}, Goals: ${goals || "not set"}`;
     } catch (error){
       console.error("Error saving climber profile", error);
@@ -149,7 +149,8 @@ export const tools = {
   getLocalTime,
   scheduleTask,
   getScheduledTasks,
-  cancelScheduledTask
+  cancelScheduledTask,
+  setClimberProfile
 } satisfies ToolSet;
 
 /**
