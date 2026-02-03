@@ -108,6 +108,38 @@ const cancelScheduledTask = tool({
   }
 });
 
+const setClimberProfile = tool({
+  description: "Save climber's profile including climbing grade, weaknesses, and goals for personalized traning plan",
+  inputSchema: z.object({
+    boulderingGrade: z.string().optional().describe("Climber's current climbing grade. ie) V4,V5,etc."),
+    sportGrade: z.string().optional().describe("Climber's current sport climbing grade. ie) 5.10a, 5.13d, 5.15d."),
+    weaknesses: z.array(z.string()).optional().describe("techniques to improve: crimps, slopers, pinches, pockets, heelhooks, body tension, weight shifting, dynamic movement, body positioning"),
+    injuries: z.string().optional().describe("Any current injuries or limitation to work around."),
+    goal: z.string().optional().describe("What the climber is working towards.")
+  }),
+  execute: async({boulderingGrade, sportGrade, weaknesses, injuries, goals}) =>{
+    const { agent } = getCurrentAgent<Chat>();
+
+    try{
+      const profile = {
+        boulderingGrade,
+        sportGrade,
+        weaknesses,
+        injuries,
+        goals,
+        updatedAt: new Date().toISOString()
+      };
+      
+      agent!.setState({ ...agent!.state, climberProfile: profile});
+      return `Profile saved! Bouldering: ${boulderingGrade || "not set"}, Sport: ${sportGrade || "not set"}, Weaknesses: ${weaknesses?.join(", ") || "none specified"}, Goals: ${goals || "not set"}`;
+    } catch (error){
+      console.error("Error saving climber profile", error);
+      return `Error saving profile: ${error}`;
+    }
+  }
+
+})
+
 /**
  * Export all available tools
  * These will be provided to the AI model to describe available capabilities
