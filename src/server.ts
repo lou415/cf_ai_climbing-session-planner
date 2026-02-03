@@ -42,7 +42,7 @@ export class Chat extends AIChatAgent<Env> {
     const model = workersai("@cf/meta/llama-3.1-70b-instruct");
     // const mcpConnection = await this.mcp.connect(
     //   "https://path-to-mcp-server/sse"
-    // );
+    // ); t
 
     // Collect all tools, including MCP tools
     const allTools = {
