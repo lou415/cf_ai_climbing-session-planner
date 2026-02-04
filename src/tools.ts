@@ -131,13 +131,43 @@ const setClimberProfile = tool({
       };
       
       agent!.setState({ ...(agent!.state || {}), climberProfile: profile });
-      return `Profile saved! Bouldering: ${boulderingGrade || "not set"}, Sport: ${sportGrade || "not set"}, Weaknesses: ${weaknesses?.join(", ") || "none specified"}, Goals: ${goals || "not set"}`;
+      return `Profile saved! Bouldering: ${boulderingGrade || "not set"}, Sport: ${sportGrade || "not set"}, Weaknesses: ${weaknesses?.join(", ") || "none specified"}, Goals: ${goal || "not set"}`;
     } catch (error){
       console.error("Error saving climber profile", error);
       return `Error saving profile: ${error}`;
     }
   }
 
+});
+
+const generateSessionPlan = tool({
+  description: "Generate a structured climbing training session based on the saved profile of the climber and session-specific inputs. Use stored profile for their grades and weaknesses.",
+  inputSchema: z.object({
+    duration: z.number().describe("Session length in minutes."),
+    focus: z.array(z.string()).describe("What to focus on in the session: crimps, slopers, pinches, pockets, heelhooks, body tension, weight shifting, dynamic movement, body positioning, endurance, or power"),
+    setting: z.enum(["indoor", "outdoor"]).describe("Training environment"),
+    discipline: z.enum(["Bouldering", "Sport"]).describe("Bouldering or sport climbing")
+  }),
+  execute: async ({ duration, focus, setting, discipline}) => {
+    const { agent } = getCurrentAgent<Chat>();
+
+    try {
+      const profile = (agent!.state as any)?.climberProfile;
+
+      const sessionRequest = {
+        duration,
+        focus,
+        setting,
+        discipline,
+        climberProfile: profile || "No profile saved - using general recommendations"
+      };
+
+      return JSON.stringify(sessionRequest, null, 2);
+    } catch (error) {
+      console.error("Error generating session plan", error);
+      return `Error generating session plan: ${error}`;
+    }
+  }
 })
 
 /**
@@ -150,7 +180,8 @@ export const tools = {
   scheduleTask,
   getScheduledTasks,
   cancelScheduledTask,
-  setClimberProfile
+  setClimberProfile,
+  generateSessionPlan
 } satisfies ToolSet;
 
 /**
