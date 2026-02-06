@@ -58,7 +58,8 @@ const generateSessionPlan = tool({
         climberProfile: profile || "No profile saved - using general recommendations"
       };
 
-      return JSON.stringify(sessionRequest, null, 2);
+      return `Generate a detailed climbing session plan based on this data: ${JSON.stringify(sessionRequest)}. 
+      Include specific warm-up activities, drills for the focus areas, main session structure with rest periods, and cool-down. Format it clearly with sections.`;
     } catch (error) {
       console.error("Error generating session plan", error);
       return `Error generating session plan: ${error}`;

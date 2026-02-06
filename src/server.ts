@@ -11,7 +11,7 @@ import {
   createUIMessageStreamResponse,
   type ToolSet
 } from "ai";
-import { createWorkersAI } from "workers-ai-provider";
+import { createAnthropic } from "@ai-sdk/anthropic";
 import { cleanupMessages } from "./utils";
 import { tools } from "./tools";
 
@@ -26,8 +26,12 @@ export class Chat extends AIChatAgent<Env> {
     onFinish: StreamTextOnFinishCallback<ToolSet>,
     options?: { abortSignal?: AbortSignal }
   ) {
-    const workersai = createWorkersAI({ binding: this.env.AI });
-    const model = workersai("@cf/meta/llama-3.1-70b-instruct");
+    // const workersai = createWorkersAI({ binding: this.env.AI });
+    // const model = workersai("@cf/meta/llama-3.1-70b-instruct");
+    const anthropic = createAnthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    });
+    const model = anthropic("claude-opus-4-6");
 
     const allTools = {
       ...tools,
