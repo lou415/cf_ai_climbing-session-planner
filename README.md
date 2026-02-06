@@ -84,8 +84,8 @@ The agent has two custom tools:
 
 1. Clone the repo:
 ```bash
-git clone https://github.com/YOUR_USERNAME/climbing-session-planner.git
-cd climbing-session-planner
+git clone https://github.com/YOUR_USERNAME/cf_ai_climbing-session-planner.git
+cd cf_ai_climbing-session-planner
 ```
 
 2. Install dependencies:
